@@ -29,8 +29,6 @@ public class Server {
 				client = server.accept();
 				
 				String clientName = handShake(client.getInputStream());
-				System.out.println(clientName);
-				
 				if(clientName != null){
 					while(connections.containsKey(clientName)){
 						clientName += new Random().nextInt(1000);
