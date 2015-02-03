@@ -14,6 +14,7 @@ public class ConnectionListener extends Thread {
 	public ConnectionListener(InputStream is, String sender) {
 		this.is = is;
 		this.sender = sender;
+		
 	}
 
 	@Override
@@ -24,7 +25,10 @@ public class ConnectionListener extends Thread {
 
 			while ((str = bf.readLine()) != null) {
 				if(!str.equals("")){
-					new Message(str, sender); 
+					
+					Message incoming = new Message(str, sender); 
+					System.out.println(incoming.getSender() + ": " + incoming.getContent());
+					System.out.println("Listener: " + Message.hasNext());
 				}
 			}
 

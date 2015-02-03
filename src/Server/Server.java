@@ -15,29 +15,31 @@ import GUI.ChatGui;
 public class Server {
 
 	public static final int port = 1717;
-	public static HashMap<String, OutputStream> connections;
-	
+
 	public static void serverStart() throws IOException {
 		ServerSocket server = new ServerSocket(port);
-		connections = new HashMap<String, OutputStream>();
-		
+		ConnectionWriter cw = new ConnectionWriter();
+		cw.start();
 		while (true) {
 			String str = "waiting for connection";
 			System.out.println(str);
 			Socket client;
 			try {
 				client = server.accept();
-				
+
 				String clientName = handShake(client.getInputStream());
-				if(clientName != null){
-					while(connections.containsKey(clientName)){
+				if (clientName != null) {
+					while (ConnectionWriter.connections.containsKey(clientName)) {
 						clientName += new Random().nextInt(1000);
 					}
-					connections.put(clientName, client.getOutputStream());
-					ChatGui gui = new ChatGui(client);
-					new Thread(gui).start();
+					ConnectionWriter.connections.put(clientName,
+							client.getOutputStream());
+					ConnectionListener cl = new ConnectionListener(
+							client.getInputStream(), clientName);
+					cl.start();
+
 				}
-				
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -47,8 +49,8 @@ public class Server {
 	private static String handShake(InputStream is) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		String str = br.readLine();
-			return str;
-		}
+		return str;
+	}
 
 	public static void main(String[] args) {
 		try {
