@@ -18,6 +18,7 @@ public class Server {
 
 	public static void serverStart() throws IOException {
 		ServerSocket server = new ServerSocket(port);
+		ServerGUI sg = new ServerGUI();
 		ConnectionWriter cw = new ConnectionWriter();
 		cw.start();
 		while (true) {
@@ -37,7 +38,8 @@ public class Server {
 					ConnectionListener cl = new ConnectionListener(
 							client.getInputStream(), clientName);
 					cl.start();
-
+					new Message("join%" + clientName, "%server%");
+					sg.logConnection(client.getInetAddress().getHostAddress(), clientName);
 				}
 
 			} catch (IOException e) {
@@ -49,6 +51,7 @@ public class Server {
 	private static String handShake(InputStream is) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		String str = br.readLine();
+		str = str.replaceAll("%", "");
 		return str;
 	}
 

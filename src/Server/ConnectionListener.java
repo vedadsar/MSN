@@ -27,10 +27,10 @@ public class ConnectionListener extends Thread {
 				if(!str.equals("")){
 					
 					Message incoming = new Message(str, sender); 
-					System.out.println(incoming.getSender() + ": " + incoming.getContent());
-					System.out.println("Listener: " + Message.hasNext());
 				}
 			}
+			
+			ConnectionWriter.connections.remove(sender);
 
 		} catch (IOException e) {
 			e.printStackTrace();

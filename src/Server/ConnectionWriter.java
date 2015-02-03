@@ -16,7 +16,6 @@ public class ConnectionWriter extends Thread {
 	public void run() {
 		while (true) {
 			if (Message.hasNext()) {
-				System.out.println("Writer: " + Message.hasNext());
 				Message msg = Message.next();
 				byte[] msgByte = (msg.getSender() + ": " + msg.getContent())
 						.getBytes();
