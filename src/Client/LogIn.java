@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import javax.swing.JButton;
@@ -94,9 +96,20 @@ public class LogIn {
 			Socket client;
 			try {
 				client = new Socket(host, port);
-				//ChatGui gui = new ChatGui(client);
-				//new Thread(gui).start();
-
+				OutputStream os  = client.getOutputStream();
+				InputStream is = client.getInputStream();
+				os.write((username + "\n").getBytes());
+				os.write((password + "\n").getBytes());
+				
+				int result = is.read();
+				
+				if(result == 0){
+				
+				ChatGui gui = new ChatGui(client);
+				new Thread(gui).start();
+				} else {
+					showError("Username i password nije tacan");
+				}
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

@@ -10,6 +10,10 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Random;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 import GUI.ChatGui;
 
 public class Server {
@@ -39,7 +43,10 @@ public class Server {
 							client.getInputStream(), clientName);
 					cl.start();
 					new Message("join%" + clientName, "%server%");
+					client.getOutputStream().write(0);
 					sg.logConnection(client.getInetAddress().getHostAddress(), clientName);
+				} else{
+					client.getOutputStream().write(-1);
 				}
 
 			} catch (IOException e) {
@@ -52,10 +59,20 @@ public class Server {
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		String str = br.readLine();
 		str = str.replaceAll("%", "");
+		String password = br.readLine();
+		int rezultat = XmlConnection.userLogin(str, password);
+		if(rezultat != 0){
+			return null;
+		}
 		return str;
 	}
 
 	public static void main(String[] args) {
+		try {
+			new XmlConnection();
+		} catch (ParserConfigurationException | SAXException | IOException e1) {
+			e1.printStackTrace();
+		}
 		try {
 			serverStart();
 		} catch (IOException e) {
