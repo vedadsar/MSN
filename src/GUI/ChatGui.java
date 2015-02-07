@@ -24,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import Client.FileSender;
+
 public class ChatGui implements Runnable {
 
 	private JTextArea display;
@@ -118,6 +120,12 @@ public class ChatGui implements Runnable {
 		}
 	}
 
+	/**
+	 * Method which send file through socket. This method will use user
+	 * that want to send file
+	 * @author vedad
+	 *
+	 */
 	private class FileHandler implements ActionListener{
 
 		@Override
@@ -126,7 +134,8 @@ public class ChatGui implements Runnable {
 			jfc.showOpenDialog(content);
 			File file = jfc.getSelectedFile();				
 			String filePath = file.getPath();
-			
+			FileSender fs = new FileSender(filePath);
+			fs.start();
 		
 
 		}

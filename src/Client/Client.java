@@ -8,7 +8,7 @@ import java.util.Scanner;
 import GUI.ChatGui;
 
 public class Client {
-	public static final int port = 1717;
+	public static final int port = 1919;
 	public static final String host = "localhost";
 	
 	
