@@ -1,5 +1,7 @@
 package Client;
 
-public class FileReciver {
+public class FileReciver extends Thread{
 
+	
+	
 }
