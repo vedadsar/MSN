@@ -24,11 +24,12 @@ public class LogIn {
 	private JPasswordField pass;
 	private String host;
 	private int port;
+	JFrame window;
 
 	public LogIn(String host, int port) {
 		this.host = host;
 		this.port = port;
-		JFrame window = new JFrame("Login");
+		window = new JFrame("Login");
 		JPanel content = new JPanel();
 		textField = new JTextField(20);
 		JButton loginButton = new JButton("Login");
@@ -94,7 +95,8 @@ public class LogIn {
 			}
 
 			Socket client;
-			try {
+		
+			try {				
 				client = new Socket(host, port);
 				OutputStream os  = client.getOutputStream();
 				InputStream is = client.getInputStream();
@@ -106,6 +108,8 @@ public class LogIn {
 				if(result == 0){
 				
 				ChatGui gui = new ChatGui(client);
+				
+				window.dispose();
 				new Thread(gui).start();
 				} else {
 					showError("Username i password nije tacan");

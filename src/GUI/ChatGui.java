@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +18,7 @@ import java.io.Reader;
 import java.net.Socket;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,17 +29,22 @@ public class ChatGui implements Runnable {
 	private JTextArea display;
 	private TextField inputMsg;
 	private Socket connection;
+	private Socket fileConnection;			//Socket for file
+	private InputStream fileInputStream;	//streams for file	
+	private OutputStream fileOutputStream;
 	private InputStream is;
 	private OutputStream os;
+	private JPanel content;
 
 	public ChatGui(final Socket connection) throws IOException {
 
 		this.connection = connection;
+		this.fileConnection = fileConnection;
 		this.is = connection.getInputStream();
 		this.os = connection.getOutputStream();
-
+		
 		JFrame window = new JFrame("MSN");
-		JPanel content = new JPanel();
+		content = new JPanel();
 		JButton buttonSend = new JButton("SEND");
 		display = new JTextArea();
 		// display.setPreferredSize(new Dimension(300, 200));
@@ -48,7 +55,11 @@ public class ChatGui implements Runnable {
 		buttonSend.addActionListener(new MessageHandler());
 		inputMsg.addKeyListener(new MessageHandler());
 		display.setLineWrap(true);
-
+		JButton fileButton = new JButton("Send file");
+		FileHandler fh = new FileHandler();
+		fileButton.addActionListener(fh);
+		
+		
 		JScrollPane areaScrollPane = new JScrollPane(display);
 		areaScrollPane
 				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -57,6 +68,7 @@ public class ChatGui implements Runnable {
 		content.add(areaScrollPane);
 		content.add(inputMsg);
 		content.add(buttonSend);
+		content.add(fileButton);
 
 		window.add(content);
 
@@ -106,6 +118,21 @@ public class ChatGui implements Runnable {
 		}
 	}
 
+	private class FileHandler implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser jfc = new JFileChooser();
+			jfc.showOpenDialog(content);
+			File file = jfc.getSelectedFile();				
+			String filePath = file.getPath();
+			
+		
+
+		}
+		
+	}
+	
 	private class MessageHandler extends KeyAdapter implements ActionListener {
 
 		private void sendMessage() {
