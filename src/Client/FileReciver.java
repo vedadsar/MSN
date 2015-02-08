@@ -1,61 +1,62 @@
 package Client;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 import Server.Message;
-
+/**
+ * Class which recive file over socket.
+ * It extends thread so while file transfer is in process
+ * user can continue chatting.
+ * @author vedad
+ *
+ */
 public class FileReciver extends Thread {	
 
-	private static final int PORT = 1919;
+	private static final int PORT = 1919;			//Port for files
 	private final static String HOST = "localhost";
-	private final int FILE_SIZE = Integer.MAX_VALUE;
 	private InputStream is;
-	private final static String RECIVE_FILE = "C:/Users/vedad/Desktop";
-
+	private Socket sock;
+	
 	@Override
-	public void run() {		
-		
-		int bytesRead;
-		int current = 0;
-		FileOutputStream fos = null; // Stream for saving file
-		BufferedOutputStream bos = null; // Buffered stream for saving file.
-		Socket sock = null;
+	public void run() {				
+	//	Socket sock ;
 		try {
-			sock = new Socket(HOST, PORT);
+			sock = new Socket(HOST, PORT);		//Creating new connection
 			System.out.println("Connecting...");
-
-			// receive file
-			byte[] mybytearray = new byte[60000];
-			InputStream is = sock.getInputStream();
-			//fos = new FileOutputStream(RECIVE_FILE);
-			//bos = new BufferedOutputStream(fos);
-			bytesRead = is.read(mybytearray, 0, mybytearray.length);
-			current = bytesRead;
-
-			do {
-				bytesRead = is.read(mybytearray, current,
-						(mybytearray.length - current));
-				if (bytesRead >= 0)
-					current += bytesRead;
-			} while (bytesRead > -1);
-
-//			bos.write(mybytearray, 0, current);
-//			bos.flush();
-//			System.out.println("File " + RECIVE_FILE + " downloaded ("
-//					+ current + " bytes read)");
-			
+						
+			byte[] fileArray = new byte[1024];	//byte array, file bytes		
+			InputStream is = sock.getInputStream();	//getting input stream
+						
+		    FileOutputStream fos = new FileOutputStream("test.txt");	//path of file.		  
+		    BufferedOutputStream bos = new BufferedOutputStream(fos);
+		    int bytesRead ;
+		    //While we're reading bytes we put them in file with
+		    // buffered output stream. This way we save file
+		    while((bytesRead =  is.read(fileArray)) > 0){
+		    	 bos.write(fileArray, 0, bytesRead);		    	
+		    }
+		    
+		    System.out.println("RECIVING DONE !");	
+		    
+		    bos.flush();
+		    bos.close();
+		    is.close();	
+		    sock.close();
+							
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			System.out.println("SENDING DONE");
-		}
-
+		} 
 	}
 }

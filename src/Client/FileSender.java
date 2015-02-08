@@ -51,23 +51,27 @@ public class FileSender extends Thread {
 			clientConnection = serverConnection.accept();
 		
 			File file = new File(path);  //Creating file with desired path.
-			//New byte arraz we'll send. It has file.lenght size.
+			//New byte array we'll send. It has file.lenght size.
 			byte[] fileArray = new byte[(int)file.length()];
 			//Buffered input stream, is actually stream that will read from file.
-			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-			bis.read(fileArray);		
+			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));		
+			bis.read(fileArray);
+		
 			os = clientConnection.getOutputStream();
 			System.out.println("Sending " +clientConnection);
 			os.write(fileArray);		//Sending File array to output stream.
 			os.flush();			
 			System.out.println("DONE");
+			
+			os.close();
+			serverConnection.close();			
 		
 		} catch (UnknownHostException e) {		
 			e.printStackTrace();
 		} catch (IOException e) {			
 			e.printStackTrace();
 		}finally{
-			//ChatGui.fileSendProcces = false;
+			
 		}
 		
 	}
