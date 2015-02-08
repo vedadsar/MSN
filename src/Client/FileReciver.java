@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Date;
 
 import Server.Message;
 /**
@@ -37,7 +38,7 @@ public class FileReciver extends Thread {
 			byte[] fileArray = new byte[1024];	//byte array, file bytes		
 			InputStream is = sock.getInputStream();	//getting input stream
 						
-		    FileOutputStream fos = new FileOutputStream("test.txt");	//path of file.		  
+		    FileOutputStream fos = new FileOutputStream("ID" +new Date().getTime()+".txt");	//path of file.		  
 		    BufferedOutputStream bos = new BufferedOutputStream(fos);
 		    int bytesRead ;
 		    //While we're reading bytes we put them in file with
