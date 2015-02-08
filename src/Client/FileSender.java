@@ -70,10 +70,7 @@ public class FileSender extends Thread {
 			e.printStackTrace();
 		} catch (IOException e) {			
 			e.printStackTrace();
-		}finally{
-			
-		}
-		
+		}		
 	}
 
 }

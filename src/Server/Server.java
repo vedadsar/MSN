@@ -29,6 +29,7 @@ public class Server {
 		ServerGUI sg = new ServerGUI();
 		ConnectionWriter cw = new ConnectionWriter();		
 		cw.start();
+		//Listening for file transfer...
 		FileConnectionListener fcl = new FileConnectionListener(FILE_PORT);
 		fcl.start();
 		
@@ -36,13 +37,10 @@ public class Server {
 			String str = "waiting for connection";
 			System.out.println(str);
 			Socket client;
-			try {
-			
+			try {			
 				client = server.accept();				
-				String clientName = handShake(client.getInputStream());				
-				
-				if (clientName != null) {
-									
+				String clientName = handShake(client.getInputStream());						
+				if (clientName != null) {									
 					while (ConnectionWriter.connections.containsKey(clientName)) {
 						clientName += new Random().nextInt(1000);
 					}

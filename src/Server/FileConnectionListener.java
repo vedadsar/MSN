@@ -6,6 +6,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.MessageFormat;
 
+
+/**
+ * Class which will constantly waiting on port 2000
+ * if someone wants to send file. All point of this class is
+ * once someone wants to send file he will notify server about it over
+ * this port and then server will send message to all Clients.
+ * Once client receive message it automatically connect to port 1919
+ * which is port for sending files.
+ * @author vedad
+ *
+ */
 public class FileConnectionListener extends Thread {
 
 	private static int FILE_PORT;
@@ -22,7 +33,7 @@ public class FileConnectionListener extends Thread {
 			System.out.println("PROSLO");
 			new Message("SENDING_FILE","SERVER");		
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		
