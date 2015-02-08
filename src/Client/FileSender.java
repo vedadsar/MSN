@@ -63,8 +63,7 @@ public class FileSender extends Thread {
 			os.flush();			
 			System.out.println("DONE");
 			
-			os.close();
-			serverConnection.close();			
+			os.close();					
 		
 		} catch (UnknownHostException e) {		
 			e.printStackTrace();

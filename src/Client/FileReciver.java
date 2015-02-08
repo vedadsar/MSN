@@ -52,6 +52,7 @@ public class FileReciver extends Thread {
 		    bos.close();
 		    is.close();	
 		    sock.close();
+		    
 							
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
