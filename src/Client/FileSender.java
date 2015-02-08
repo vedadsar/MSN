@@ -10,6 +10,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import GUI.ChatGui;
+import Server.Message;
+
 /**
  * Class which will send file.
  * This class extends thread because we want sending file
@@ -38,6 +41,7 @@ public class FileSender extends Thread {
 	 */
 	@Override
 	public void run() {
+		
 		ServerSocket serverConnection;	//Socket from client that will actually become server when sending file.
 		Socket clientConnection;		//Client connection once its accepted by server.
 		try {
@@ -62,6 +66,8 @@ public class FileSender extends Thread {
 			e.printStackTrace();
 		} catch (IOException e) {			
 			e.printStackTrace();
+		}finally{
+			//ChatGui.fileSendProcces = false;
 		}
 		
 	}

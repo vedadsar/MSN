@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import Server.Message;
+import Client.FileReciver;
 import Client.FileSender;
 
 public class ChatGui implements Runnable {
@@ -34,17 +37,19 @@ public class ChatGui implements Runnable {
 	private Socket fileConnection;			//Socket for file
 	private InputStream fileInputStream;	//streams for file	
 	private OutputStream fileOutputStream;
-	private InputStream is;
-	private OutputStream os;
+	private  InputStream is;
+	private  OutputStream os;
 	private JPanel content;
+	
 
 	public ChatGui(final Socket connection) throws IOException {
 
 		this.connection = connection;
 		this.fileConnection = fileConnection;
 		this.is = connection.getInputStream();
-		this.os = connection.getOutputStream();
-		
+		this.os = connection.getOutputStream();	
+		this.fileOutputStream = connection.getOutputStream();
+	
 		JFrame window = new JFrame("MSN");
 		content = new JPanel();
 		JButton buttonSend = new JButton("SEND");
@@ -99,18 +104,27 @@ public class ChatGui implements Runnable {
 
 		String line = null;
 		while ((line = input.readLine()) != null) {
+					
 			if (!line.equals("")) {
 				System.out.println(line);
+				//If line is from server message sending_file
+				//Client will start new thread which will open new
+				//socket 
+				if(line.equalsIgnoreCase("SERVER: SENDING_FILE")){
+					FileReciver fr = new FileReciver();
+					fr.start();
+				}
+				
 				String[] array = line.split(":");
 				if(array[0].equals("%server%")){
 					String[] arrayServer = array[1].split("%");
 					if(arrayServer[0].equals(" join")){
 						display.append(arrayServer[1]+" se pridruzio chatu\n");
 						
-					} else if(arrayServer[0].equals(" left")){
-						
+					} else if(arrayServer[0].equals(" left")){						
 						display.append(arrayServer[1] + " napustio chat\n");	
-					}
+					}	
+					
 					
 				} else {
 				display.append( line + "\n");
@@ -133,7 +147,18 @@ public class ChatGui implements Runnable {
 			JFileChooser jfc = new JFileChooser();
 			jfc.showOpenDialog(content);
 			File file = jfc.getSelectedFile();				
-			String filePath = file.getPath();
+			String filePath = file.getPath();				
+			
+			//Connecting to servers port 2000 so we notify server that
+			//there is file to be send. Once server accepts
+			//This connection he will send server message
+			//SENDING_FILE.
+			try {
+				Socket conn = new Socket("localhost", 2000);				
+			} catch (IOException e1) {				
+				e1.printStackTrace();
+			}
+			
 			FileSender fs = new FileSender(filePath);
 			fs.start();
 		
@@ -151,9 +176,11 @@ public class ChatGui implements Runnable {
 				display.append("Me: " + str);
 				try {
 					os.write(str.getBytes());
+					os.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
 				inputMsg.setText(null);
 
 			}

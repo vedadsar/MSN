@@ -1,12 +1,14 @@
 package Server;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -14,26 +16,33 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import Client.FileReciver;
 import GUI.ChatGui;
 
 public class Server {
 
 	public static final int port = 1717;
+	public static final int FILE_PORT = 2000;
 
-	public static void serverStart() throws IOException {
+	public static synchronized void serverStart() throws IOException, InterruptedException {
 		ServerSocket server = new ServerSocket(port);
 		ServerGUI sg = new ServerGUI();
-		ConnectionWriter cw = new ConnectionWriter();
+		ConnectionWriter cw = new ConnectionWriter();		
 		cw.start();
+		FileConnectionListener fcl = new FileConnectionListener(FILE_PORT);
+		fcl.start();
+		
 		while (true) {
 			String str = "waiting for connection";
 			System.out.println(str);
 			Socket client;
 			try {
-				client = server.accept();
-
-				String clientName = handShake(client.getInputStream());
+			
+				client = server.accept();				
+				String clientName = handShake(client.getInputStream());				
+				
 				if (clientName != null) {
+									
 					while (ConnectionWriter.connections.containsKey(clientName)) {
 						clientName += new Random().nextInt(1000);
 					}
@@ -52,6 +61,7 @@ public class Server {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		
 		}
 	}
 
@@ -67,7 +77,7 @@ public class Server {
 		return str;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		try {
 			new XmlConnection();
 		} catch (ParserConfigurationException | SAXException | IOException e1) {
