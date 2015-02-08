@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import Server.Message;
 import Client.FileReciver;
@@ -95,6 +97,7 @@ public class ChatGui implements Runnable {
 			System.exit(0);
 			}
 		});
+		window.setLocation(400, 400);
 		window.setSize(400, 300);
 		window.setVisible(true);
 
@@ -112,10 +115,19 @@ public class ChatGui implements Runnable {
 				//Client will start new thread which will open new
 				//socket 
 				if(line.equalsIgnoreCase("SERVER: SENDING_FILE")){
-					FileReciver fr = new FileReciver();
-					fr.start();
+					FileSendPopup fsp = new FileSendPopup();	
 					
-				}
+					while(fsp.isChoice() == 0){
+					
+					}
+					if(fsp.isChoice() == 1){
+						FileReciver fr = new FileReciver();
+						fr.start();
+					}else if(fsp.isChoice() == -1){
+						System.out.println("FILE NOT ACCEPTED");
+					}
+				}				
+								
 				
 				String[] array = line.split(":");
 				if(array[0].equals("%server%")){
@@ -156,7 +168,8 @@ public class ChatGui implements Runnable {
 			//This connection he will send server message
 			//SENDING_FILE.
 			try {
-				Socket conn = new Socket("localhost", 2000);				
+				Socket conn = new Socket("localhost", 2000);	
+				OutputStream fileOS = conn.getOutputStream();				
 			} catch (IOException e1) {				
 				e1.printStackTrace();
 			}
