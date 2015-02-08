@@ -21,6 +21,7 @@ import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -113,6 +114,7 @@ public class ChatGui implements Runnable {
 				if(line.equalsIgnoreCase("SERVER: SENDING_FILE")){
 					FileReciver fr = new FileReciver();
 					fr.start();
+					
 				}
 				
 				String[] array = line.split(":");
